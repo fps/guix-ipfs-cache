@@ -1,7 +1,7 @@
 # Requirements:
 
 * jq to parse berlin's API responses
-* ipfs to to ipfs things
+* ipfs to do ipfs things
 * a running ipfs daemon
 
 # How to run:
