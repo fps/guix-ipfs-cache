@@ -1,3 +1,4 @@
+mkdir -p cache/nar/gzip
 
 echo "#### FINISHED JOBS"
 bash get_build_hashes.sh > current_hashes.txt; 
