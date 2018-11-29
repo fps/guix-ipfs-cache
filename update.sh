@@ -1,3 +1,4 @@
+echo "#### CACHE UPDATE STARTED"
 mkdir -p cache/nar/gzip
 
 echo "#### FINISHED JOBS"
@@ -12,8 +13,9 @@ for n in `cat current_hashes.txt`; do
 done
 
 echo "#### GETTING NARINFOS"
+rm -f current_nars.txt
 for n in cache/*.narinfo; do 
-    cat "$n" | grep ^URL | cut -d / -f 3 > current_nars.txt
+    cat "$n" | grep ^URL | cut -d / -f 3 >> current_nars.txt
 done
 
 
@@ -31,3 +33,4 @@ ipfs add -r cache > ipfs_log.txt
 echo "#### UPDATING IPNS"
 cache_cid=`tail -n 1 ipfs_log.txt | cut -d ' ' -f 2`
 ipfs name publish "$cache_cid"
+echo "#### DONE."

@@ -1,4 +1,4 @@
 while true; do
+    sleep 300
     bash update.sh
-    sleep 30
 done
