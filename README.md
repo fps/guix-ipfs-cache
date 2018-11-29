@@ -93,5 +93,21 @@ $ ipfs name publish QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1
 Published to QmaeGpMRsHmeVaQFRnwtuZYdSdVgbc3Y64aDFs1ya8Frnb: /ipfs/QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1
 </pre>
 
-This basically completes the necessary components to provide a stable substitute-url for guix that can have changing contents. Checkout https://ipfs.io/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i which is the address that this repository's code running on a server produces.
+This basically completes the necessary components to provide a stable substitute-url for guix that can have changing contents. Checkout https://ipfs.io/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i which is the address that this repository's code running on a server produces. Note how the first part of the url changed from <code>ipfs</code> to <code>ipns</code>.
+
+# Fetching substitutes from berlin.guixsd.org and publishing them via ipfs
+
+The code in this repository contains a bunch of shell scripts (with no error handling whatsoever - so beware, it's just a proof of concept) that perform these steps:
+
+* Fetch narinfos into <code>cache/</code>
+* Fetch the respective nar into <code>cache/nar/gzip</code>
+* build up directory structure that <code>guix package</code> expects
+* publish them all to ipfs
+* update the ipns name to point to the latest version
+
+with binaries retrieved from berlin.guixsd.org's API that informs about finished builds.
+
+# An optimization for size, speed and profit
+
+Once a directory reaches a certain size, adding it recursively with <code>ipfs add</code> becomes slow as a dog (disk IO alone being a bottleneck). Also just keeping all files on disk is using up precious disk space while the promise of ipfs is that the swarm can take over hosting "responsibility". Luckily there is a way to add entries to a directory object directly without having to rerun <code>ipfs add -r</code> over and over again.
 
