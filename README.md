@@ -93,7 +93,7 @@ $ ipfs name publish QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1
 Published to QmaeGpMRsHmeVaQFRnwtuZYdSdVgbc3Y64aDFs1ya8Frnb: /ipfs/QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1
 </pre>
 
-This basically completes the necessary components to provide a stable substitute-url for guix that can have changing contents. Checkout https://ipfs.io/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i which is the address that this repository's code running on a server produces. Note how the first part of the url changed from <code>ipfs</code> to <code>ipns</code>:
+This basically completes the necessary components to provide a stable substitute-url for guix that can have changing contents. Checkout https://ipfs.io/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i which is the address that this repository's code running on a server produces. Note how the first part of the url changed from <code>ipfs</code> to <code>ipns</code> (note: like said above the ipns name is specific to the particular ipfs node publishing that name):
 
 <code>
 guix package --substitute-url="http://localhost:8080/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i https://mirror.hydra.gnu.org" -i emacs
