@@ -63,13 +63,35 @@ added QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1 test
  14 B / 14 B [=================================================================================================] 100.00%
 </pre>
 
-The attentive reader will have noticed that the resulting CID of the <code>test</code> directory has changed.
+The attentive reader will have noticed that the resulting CID of the <code>test</code> directory has changed. This will happen whenever a file's content changed or the structure of the directory changed (e.g. by adding new or removing existing files from the directory).
 
 <pre>
 $ curl http://localhost:8080/ipfs/QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1/foo
 Hello, world!
 </pre>
 
+At this point we can imagine how a local ipfs daemon can act as substitute-url for guix: We simply publish a directory structure on ipfs that resembles the structure the <code>guix package</code> expects, namely:
 
+* A bunch of <code>narinfo</code> files directly in the root of the directory
+* A nix-cache-control text file in the root of the directory
+* A bunch of <code>nar</code> files in a <code>nar/gzip</code> subdirectory.
 
+An example of this would be <code>https://ipfs.io/ipfs/QmR6y77ijvafrZanwxw63Q2QHkMBK4PbhTxSgTC9m3Un3o</code> (ipfs.io runs a gateway similar to the local ipfs daemon, so please click on this link to browse the directory).
+
+A user could, in principle, now use an url like this in a call to <code>guix package</code>.
+
+<pre>
+guix package --substitute-url="http://localhost:8080.ipfs/QmR6y77ijvafrZanwxw63Q2QHkMBK4PbhTxSgTC9m3Un3o https://mirror.hydra.gnu.org" -i emacs
+</pre>
+
+The attentive reader will have noticed one weakness of this approach: Everytime the root-directory of this repository changes the resulting URL will change as well. This would imply that users would have to constantly update the URL they use in the <code>substitute-url</code> parameter to <code>guix package</code>. To remedy situations like this ipfs has implemented a name system called ipns.
+
+ipfs allows to publish ipns names that are mutable. The name is the hash of a public part of a public/private key pair, and per default <code>ipfs name publish</code> uses the ipfs node's key.
+
+<pre>
+$ ipfs name publish QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1
+Published to QmaeGpMRsHmeVaQFRnwtuZYdSdVgbc3Y64aDFs1ya8Frnb: /ipfs/QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1
+</pre>
+
+This basically completes the necessary components to provide a stable substitute-url for guix that can have changing contents. Checkout https://ipfs.io/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i which is the address that this repository's code running on a server produces.
 
