@@ -111,3 +111,5 @@ with binaries retrieved from berlin.guixsd.org's API that informs about finished
 
 Once a directory reaches a certain size, adding it recursively with <code>ipfs add</code> becomes slow as a dog (disk IO alone being a bottleneck). Also just keeping all files on disk is using up precious disk space while the promise of ipfs is that the swarm can take over hosting "responsibility". Luckily there is a way to add entries to a directory object directly without having to rerun <code>ipfs add -r</code> over and over again.
 
+TODO: implement and document this section's content ;)
+
