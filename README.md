@@ -144,7 +144,7 @@ Published to QmaeGpMRsHmeVaQFRnwtuZYdSdVgbc3Y64aDFs1ya8Frnb: /ipfs/QmT429U7M2Civ
 
 If we now want to, at some later point, add to the directory published under this name we have two options:
 
-* Remember the resulting CID of last directory state (in this case <code>QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1</code>
+* Remember the resulting CID of last directory state (in this case <code>QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1</code>)
 * Look it up first from its published name
 
 The second option could be done like:
