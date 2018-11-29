@@ -81,7 +81,7 @@ An example of this would be <code>https://ipfs.io/ipfs/QmR6y77ijvafrZanwxw63Q2QH
 A user could, in principle, now use an url like this in a call to <code>guix package</code>.
 
 <pre>
-guix package --substitute-url="http://localhost:8080.ipfs/QmR6y77ijvafrZanwxw63Q2QHkMBK4PbhTxSgTC9m3Un3o https://mirror.hydra.gnu.org" -i emacs
+guix package --substitute-url="http://localhost:8080/ipfs/QmR6y77ijvafrZanwxw63Q2QHkMBK4PbhTxSgTC9m3Un3o https://mirror.hydra.gnu.org" -i emacs
 </pre>
 
 The attentive reader will have noticed one weakness of this approach: Everytime the root-directory of this repository changes the resulting URL will change as well. This would imply that users would have to constantly update the URL they use in the <code>substitute-url</code> parameter to <code>guix package</code>. To remedy situations like this ipfs has implemented a name system called ipns.
