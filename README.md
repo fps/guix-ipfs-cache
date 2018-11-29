@@ -11,6 +11,16 @@ Change to the directory containing guix-ipfs-cache and run
 
 # Rationale
 
+TL;DR: ipfs allows sharing of whole directory structures under persistent names (ipns), even if the directory structure changes. Since <code>guix package --substitute-url="http://localhost:8080/some/path/to/repository/of/packages"</code> expects a certain directory structure we can try and share this directory structure via ipfs/ipns. Click this link for an example:
+
+http://ipfs.io/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i
+
+(This is running via the gateway to ipfs provided by the ipfs people). Once a user has a running ipfs daemon locally they can use this:
+
+http://localhost:8080/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i
+
+as substitute-url.
+
 ## ipfs daemon as "local" guix substitute-mirror
 
 The ipfs daemon provides a local http-proxy to the ipfs network that allows retrieving files by their CID (content-id), a unique identifier for the respective file that derived from its contents. The default port of this proxy is TCP/8080. An url to retrieve a file from the daemon would e.g. look like this:
