@@ -19,7 +19,7 @@ http://ipfs.io/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i
 
 http://localhost:8080/ipns/QmPMJYhxbeaSYXzNLMRbvvJknpYcJG9DcG8h2kJJmukd9i
 
-as substitute-url.
+as substitute-url. Read on below for some more details if interested.
 
 ## ipfs daemon as "local" guix substitute-mirror
 
@@ -113,6 +113,7 @@ guix package --substitute-url="http://localhost:8080/ipns/QmPMJYhxbeaSYXzNLMRbvv
 
 The code in this repository contains a bunch of shell scripts (with no error handling whatsoever - so beware, it's just a proof of concept) that perform these steps:
 
+* Query http://berlin.guixsd.org for newly finished builds
 * Fetch narinfos into <code>cache/</code>
 * Fetch the respective nar into <code>cache/nar/gzip</code>
 * build up directory structure that <code>guix package</code> expects
@@ -125,5 +126,73 @@ with binaries retrieved from berlin.guixsd.org's API that informs about finished
 
 Once a directory reaches a certain size, adding it recursively with <code>ipfs add</code> becomes slow as a dog (disk IO alone being a bottleneck). Also just keeping all files on disk is using up precious disk space while the promise of ipfs is that the swarm can take over hosting "responsibility". Luckily there is a way to add entries to a directory object directly without having to rerun <code>ipfs add -r</code> over and over again.
 
-TODO: implement and document this section's content ;)
+Here's an example. Let's add a directory structure under ipfs:
+
+<pre>
+ipfs add -r test/
+added QmeeLUVdiSTTKQqhWqsffYDtNvvvcTfJdotkNyi1KDEJtQ test/foo
+added QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1 test
+ 14 B / 14 B [=================================================================================================] 100.00%
+</pre>
+
+and publish it under an ipns name:
+
+<pre>
+$ ipfs name publish QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1
+Published to QmaeGpMRsHmeVaQFRnwtuZYdSdVgbc3Y64aDFs1ya8Frnb: /ipfs/QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1
+</pre>
+
+If we now want to, at some later point, add to the directory published under this name we have two options:
+
+* Remember the resulting CID of last directory state (in this case <code>QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1</code>
+* Look it up first from its published name
+
+The second option could be done like:
+
+<pre>
+$ ipfs name resolve QmaeGpMRsHmeVaQFRnwtuZYdSdVgbc3Y64aDFs1ya8Frnb
+/ipfs/QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1
+</pre>
+
+This gives us back the CID of the previous state of the directory. Now to add onto that we can perform these steps for each newly added file:
+
+Add the file to ipfs:
+
+<pre>
+$ ipfs add bar 
+added QmTEzo7FYzUCd5aq7bGKoMLfsbbsebpfARRZd4Znejb25R bar
+ 4 B / 4 B [===================================================================================================] 100.00%
+</pre>
+
+...modify the directory object from above:
+
+<pre>
+$ ipfs object patch add-link /ipfs/QmT429U7M2Civz8qmkA6uZ5tvLJ9njQAvzsX6BvWodJ3i1 bar QmTEzo7FYzUCd5aq7bGKoMLfsbbsebpfARRZd4Znejb25R
+QmcD4o2EK1qS8H4dR3usWmiZqKCGwSugUgkRaXgtcqEEaF
+</pre>
+
+resulting in a new CID for the modified directory:
+
+<pre>
+$ ipfs ls QmcD4o2EK1qS8H4dR3usWmiZqKCGwSugUgkRaXgtcqEEaF
+QmTEzo7FYzUCd5aq7bGKoMLfsbbsebpfARRZd4Znejb25R 12 bar
+QmeeLUVdiSTTKQqhWqsffYDtNvvvcTfJdotkNyi1KDEJtQ 22 foo
+</pre>
+
+which we can then republish:
+
+<pre>
+$ ipfs name publish QmcD4o2EK1qS8H4dR3usWmiZqKCGwSugUgkRaXgtcqEEaF
+Published to QmaeGpMRsHmeVaQFRnwtuZYdSdVgbc3Y64aDFs1ya8Frnb: /ipfs/QmcD4o2EK1qS8H4dR3usWmiZqKCGwSugUgkRaXgtcqEEaF
+</pre>
+
+And voila:
+
+<pre>
+$ ipfs ls /ipns/QmaeGpMRsHmeVaQFRnwtuZYdSdVgbc3Y64aDFs1ya8Frnb
+QmTEzo7FYzUCd5aq7bGKoMLfsbbsebpfARRZd4Znejb25R 12 bar
+QmeeLUVdiSTTKQqhWqsffYDtNvvvcTfJdotkNyi1KDEJtQ 22 foo
+</pre>
+
+The implementation in the provided scripts is left as excercise to the interested reader for now :)
 
