@@ -1,6 +1,7 @@
 # Requirements:
 
 * jq to parse berlin's API responses (in $PATH)
+* curl to download things
 * ipfs to do ipfs things (in $PATH)
 * a running ipfs daemon that is online
 
